@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Matching Game</title>
+  <style>
+    img {
+      position: absolute;
+    }
+
+    div {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+    }
+
+    #rightSide {
+      left: 500px;
+      border-left: 1px solid black
+    }
+  </style>
+</head>
+
+<body onload="playGame()">
+  <h1>Matching Game</h1>
+  <p>
+    Click on the extra smiling face on the left.
+  </p>
+  <div id="leftSide">
+
+  </div>
+  <div id="rightSide">
+
+  </div>
+  <script type="text/javascript">
+    function playGame() {
+      var numberOfFaces = 5;
+      var theLeftSide = document.getElementById("leftSide");
+      var theRightSide = document.getElementById("rightSide");
+      generateFaces(numberOfFaces, theLeftSide, theRightSide);
+
+      var theBody = document.getElementsByTagName("body")[0];
+      theBody.onclick = function gameOver()
+      {
+        alert("Game over!");
+        //Remove interactive properties from the page to prevent further play
+        theBody.onClick = null;
+        theLeftSide.lastChild.onClick = null;
+      }
+    }
+
+    function generateFaces(numberOfFaces, theLeftSide, theRightSide) {
+      var leftWidth = theLeftSide.offsetWidth;
+      var leftHeight = theLeftSide.offsetHeight;
+      var smileyImgWidth = "100";
+      var smileyImgHeight = "100";
+      for (var i = 0; i < numberOfFaces; i++)
+      {
+        var smileyImg = document.createElement("img");
+        smileyImg.src = "smile.png";
+
+        smileyLeft = Math.floor(Math.random() * (leftWidth - smileyImgWidth));
+        smileyTop = Math.floor(Math.random() * (leftHeight - smileyImgHeight));
+
+        smileyImg.style.left = smileyLeft + "px";
+        smileyImg.style.top = smileyTop + "px";
+        theLeftSide.appendChild(smileyImg);
+      }
+
+      var leftSideImages = theLeftSide.cloneNode(true);
+      theLeftSide.lastChild.onclick = function nextLevel(event)
+      {
+        event.stopPropagation(); //In order not to also call onClick for the body
+        numberOfFaces += 5;
+        //Remove all previous smilies before generating a new set
+        while (theLeftSide.firstChild) {
+          theLeftSide.removeChild(theLeftSide.firstChild);
+        }
+        while (theRightSide.firstChild) {
+          theRightSide.removeChild(theRightSide.firstChild);
+        }
+        generateFaces(numberOfFaces, theLeftSide, theRightSide);
+      }
+
+      leftSideImages.removeChild(leftSideImages.lastChild);
+      theRightSide.appendChild(leftSideImages);
+    }
+  </script>
+</body>
+
+</html>
